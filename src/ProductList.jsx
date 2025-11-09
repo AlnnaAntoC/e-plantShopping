@@ -6,6 +6,7 @@ import { addItem } from './CartSlice';
 
 
 
+
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
@@ -263,14 +264,23 @@ function ProductList({ onHomeClick }) {
         setShowCart(false);
     };
 
+   
     const handleAddToCart = (plant) => {
-        console.log("Added to cart:", plant.name); // Optional: for debugging
-        dispatch(addItem(plant)); // Dispatch the selected plant to CartSlice
-        setAddedToCart((prevState) => ({
-            ...prevState,
-            [plant.name]: true, // Mark this plant as added
-        }));
-    };
+    dispatch(addItem({
+        name: plant.name,
+        image: plant.image,
+        cost: plant.cost
+    }));
+
+    setAddedToCart((prevState) => ({
+        ...prevState,
+        [plant.name]: true, // Mark as added
+    }));
+};
+
+
+
+
     
 
 
