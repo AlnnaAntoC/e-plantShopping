@@ -3,34 +3,78 @@ import { useSelector, useDispatch } from 'react-redux';
 import { removeItem, updateQuantity } from './CartSlice';
 import './CartItem.css';
 
+
+
 const CartItem = ({ onContinueShopping }) => {
   const cart = useSelector(state => state.cart.items);
   const dispatch = useDispatch();
 
-  // Calculate total amount for all products in the cart
-  const calculateTotalAmount = () => {
- 
+  
+ // Calculate total amount for all products in the cart
+   const calculateTotalAmount = () => {
+        let total = 0;
+        cart.forEach(item => {
+          const price = parseFloat(item.cost.substring(1));
+          total += price * item.quantity;
+        });
+        return total.toFixed(2);
   };
+    
+
+ 
+
 
   const handleContinueShopping = (e) => {
-   
+    e.preventDefault();
+    onContinueShopping(e);
   };
 
 
+  const handleCheckoutShopping = (e) => {
+    e.preventDefault(); // Prevent default form behavior
+    alert('Functionality to be added for future reference');
+  };
 
   const handleIncrement = (item) => {
+    // Increase the item quantity by 1
+    dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
   };
 
   const handleDecrement = (item) => {
-   
+    if (item.quantity > 1) {
+      // Decrease the quantity by 1
+      dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
+    } else {
+      // If quantity would drop to 0, remove the item
+      dispatch(removeItem({ name: item.name }));
+    }
   };
 
+
+  
   const handleRemove = (item) => {
+    // Dispatch the removeItem action to delete the plant from the cart
+    dispatch(removeItem({ name: item.name }));
   };
 
-  // Calculate total cost based on quantity for an item
+
+
+
   const calculateTotalCost = (item) => {
+    // Extract numeric value from cost string (remove "$")
+    const cost = parseFloat(item.cost.substring(1));
+
+    // Multiply cost by quantity to get subtotal
+    const subtotal = cost * item.quantity;
+
+    // Return formatted subtotal (two decimal places)
+    return subtotal.toFixed(2);
   };
+
+
+
+
+
 
   return (
     <div className="cart-container">
@@ -48,7 +92,9 @@ const CartItem = ({ onContinueShopping }) => {
                 <button className="cart-item-button cart-item-button-inc" onClick={() => handleIncrement(item)}>+</button>
               </div>
               <div className="cart-item-total">Total: ${calculateTotalCost(item)}</div>
+
               <button className="cart-item-delete" onClick={() => handleRemove(item)}>Delete</button>
+
             </div>
           </div>
         ))}
@@ -56,8 +102,15 @@ const CartItem = ({ onContinueShopping }) => {
       <div style={{ marginTop: '20px', color: 'black' }} className='total_cart_amount'></div>
       <div className="continue_shopping_btn">
         <button className="get-started-button" onClick={(e) => handleContinueShopping(e)}>Continue Shopping</button>
+        
+
         <br />
-        <button className="get-started-button1">Checkout</button>
+        
+        <button className="get-started-button1" onClick={(e) => handleCheckoutShopping(e)}>
+  Checkout
+</button>
+
+
       </div>
     </div>
   );
