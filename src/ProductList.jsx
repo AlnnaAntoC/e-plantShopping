@@ -1,9 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import './ProductList.css'
 import CartItem from './CartItem';
-import { useDispatch } from 'react-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from './CartSlice';
+import { configureStore } from '@reduxjs/toolkit';
+import cartReducer from './CartSlice';
+import { Provider } from 'react-redux';
+
+
+// Create a Redux store using configureStore from Redux Toolkit
+const store = configureStore({
+    // Define the root reducer object
+    reducer: {
+        // 'cart' is the name of the slice in the store, and it's managed by cartReducer
+        cart: cartReducer,
+    },
+});
+
+//export default store; // Export the store for use in the app (e.g., in <Provider store={store}>)
 
 
 
@@ -19,7 +33,7 @@ function ProductList({ onHomeClick }) {
         return cartItems ? cartItems.reduce((total, item) => total + item.quantity, 0) : 0;
       };
       
-   
+    
 
 
 
@@ -379,4 +393,13 @@ function ProductList({ onHomeClick }) {
     );
 }
 
-export default ProductList;
+
+
+export default function ProductListWithStore(props) {
+    return (
+      <Provider store={store}>
+        <ProductList {...props} />
+      </Provider>
+    );
+  }
+  
